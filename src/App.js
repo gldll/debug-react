@@ -1,25 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
-
+import logo from "./logo.svg";
+import "./App.css";
+import { useState, useTransition, useEffect } from "react";
 function App() {
+  const [a, setA] = useState(1);
+
+  // const [isPending, startTransition] = useTransition();
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div>{a}</div>
+      <button onClick={()=>{setA((data) => data + 1)}}>加一个</button>
     </div>
   );
 }
 
 export default App;
+// useEffect(()=>{
+//   setTimeout(()=>{
+//     startTransition(()=>{
+//       setA(new Array(10000).fill('123'))
+//     })
+
+//   },0)
+// },[])
