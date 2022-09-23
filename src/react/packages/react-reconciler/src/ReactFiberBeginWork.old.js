@@ -1073,21 +1073,6 @@ function updateFunctionComponent(
   nextProps: any,
   renderLanes,
 ) {
-  if (__DEV__) {
-    if (workInProgress.type !== workInProgress.elementType) {
-      // Lazy component props can't be validated in createElement
-      // because they're only guaranteed to be resolved here.
-      const innerPropTypes = Component.propTypes;
-      if (innerPropTypes) {
-        checkPropTypes(
-          innerPropTypes,
-          nextProps, // Resolved props
-          'prop',
-          getComponentNameFromType(Component),
-        );
-      }
-    }
-  }
 
   let context;
   if (!disableLegacyContext) {
@@ -1095,16 +1080,13 @@ function updateFunctionComponent(
     context = getMaskedContext(workInProgress, unmaskedContext);
   }
 
-  let nextChildren;
-  let hasId;
+
   prepareToReadContext(workInProgress, renderLanes);
   if (enableSchedulingProfiler) {
     markComponentRenderStarted(workInProgress);
   }
-  if (__DEV__) {
-    ReactCurrentOwner.current = workInProgress;
-    setIsRendering(true);
-    nextChildren = renderWithHooks(
+
+  const nextChildren = renderWithHooks(
       current,
       workInProgress,
       Component,
@@ -1112,38 +1094,8 @@ function updateFunctionComponent(
       context,
       renderLanes,
     );
-    hasId = checkDidRenderIdHook();
-    if (
-      debugRenderPhaseSideEffectsForStrictMode &&
-      workInProgress.mode & StrictLegacyMode
-    ) {
-      setIsStrictModeForDevtools(true);
-      try {
-        nextChildren = renderWithHooks(
-          current,
-          workInProgress,
-          Component,
-          nextProps,
-          context,
-          renderLanes,
-        );
-        hasId = checkDidRenderIdHook();
-      } finally {
-        setIsStrictModeForDevtools(false);
-      }
-    }
-    setIsRendering(false);
-  } else {
-    nextChildren = renderWithHooks(
-      current,
-      workInProgress,
-      Component,
-      nextProps,
-      context,
-      renderLanes,
-    );
-    hasId = checkDidRenderIdHook();
-  }
+  const hasId = checkDidRenderIdHook();
+
   if (enableSchedulingProfiler) {
     markComponentRenderStopped();
   }
@@ -3842,23 +3794,7 @@ function beginWork(
   workInProgress: Fiber,
   renderLanes: Lanes,
 ): Fiber | null {
-  if (__DEV__) {
-    if (workInProgress._debugNeedsRemount && current !== null) {
-      // This will restart the begin phase with a new fiber.
-      return remountFiber(
-        current,
-        workInProgress,
-        createFiberFromTypeAndProps(
-          workInProgress.type,
-          workInProgress.key,
-          workInProgress.pendingProps,
-          workInProgress._debugOwner || null,
-          workInProgress.mode,
-          workInProgress.lanes,
-        ),
-      );
-    }
-  }
+
 
   if (current !== null) {
     const oldProps = current.memoizedProps;

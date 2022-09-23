@@ -2452,6 +2452,7 @@ function commitRootImpl(
       rootCommittingMutationOrLayoutEffects = root;
     }
 
+
     // The next phase is the mutation phase, where we mutate the host tree.
     commitMutationEffects(root, finishedWork, lanes);
 
